@@ -12,19 +12,21 @@ import java.util.List;
 @RestController
 public class BookController {
 
-    @Autowired
-    private BookService bookService;
+    @Autowired BookService bookService;
+
+    @GetMapping("/")
+    String home() {
+        return "Hello World!";
+    }
 
     @GetMapping("/books")
-    public List<BookObject> getBooks() {
+    List<BookObject> getBooks() {
         return bookService.getBooks();
     }
 
     @GetMapping("/books/{id}")
-    public BookObject getBook(@PathVariable String id) {
+    BookObject getBook(@PathVariable String id) {
         return bookService.getBook(id);
     }
-
-
 
 }

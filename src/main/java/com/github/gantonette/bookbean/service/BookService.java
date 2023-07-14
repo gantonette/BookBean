@@ -40,8 +40,8 @@ public class BookService {
     public BookObject getBook(String id) {
         QueryConditional query =
                 QueryConditional.keyEqualTo(k -> k.partitionValue(id));
-        QueryEnhancedRequest request =
-                QueryEnhancedRequest.builder().queryConditional(query).build();
+
+        QueryEnhancedRequest request = QueryEnhancedRequest.builder().queryConditional(query).build();
 
         PageIterable<BookObject> result = dynamoDbTemplate.query(request, BookObject.class);
 
@@ -49,11 +49,11 @@ public class BookService {
 
         result.items().forEach(bookObjects::add);
 
-        if (bookObjects.size() > 0) {
-            return bookObjects.get(0);
-        } else {
+        if (bookObjects.size() == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
+
+        return bookObjects.get(0);
     }
 
 }
