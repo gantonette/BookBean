@@ -12,11 +12,6 @@ public class BookController {
 
     @Autowired BookService bookService;
 
-    @GetMapping("/")
-    String home() {
-        return "Hello World!";
-    }
-
     @GetMapping("/books")
     List<Book> getBooks() {
         return bookService.getBooks();
@@ -30,5 +25,16 @@ public class BookController {
     @PostMapping("/books")
     Book postBook(@RequestBody Book book) {
         return bookService.postBook(book);
+    }
+
+    @PutMapping("/books/{id}")
+    Book updateBook(@PathVariable String id, @RequestBody Book book) {
+        return null;
+//        return bookService.updateBook(id, book);
+    }
+
+    @DeleteMapping("/books/{id}")
+    void deleteBook(@PathVariable String id) {
+//        bookService.deleteBook(id);
     }
 }
