@@ -3,9 +3,7 @@ package com.github.gantonette.bookbean.controller;
 import com.github.gantonette.bookbean.model.Book;
 import com.github.gantonette.bookbean.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,4 +27,8 @@ public class BookController {
         return bookService.getBook(id);
     }
 
+    @PostMapping("/books")
+    Book postBook(@RequestBody Book book) {
+        return bookService.postBook(book);
+    }
 }

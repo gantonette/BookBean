@@ -14,6 +14,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.ScanEnhancedRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 
@@ -54,6 +55,14 @@ public class BookService {
         }
 
         return books.get(0);
+    }
+
+    public Book postBook(Book book) {
+        String id = UUID.randomUUID().toString();
+
+        book.setId(id);
+        dynamoDbTemplate.save(book);
+        return book;
     }
 
 }
