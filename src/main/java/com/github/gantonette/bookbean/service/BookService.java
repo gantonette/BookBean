@@ -1,6 +1,6 @@
 package com.github.gantonette.bookbean.service;
 
-import com.github.gantonette.bookbean.model.BookObject;
+import com.github.gantonette.bookbean.model.Book;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,37 +23,37 @@ public class BookService {
 
     @Autowired DynamoDbTemplate dynamoDbTemplate;
 
-    public List<BookObject> getBooks() {
+    public List<Book> getBooks() {
         final ScanEnhancedRequest request = ScanEnhancedRequest.builder().build();
 
-        PageIterable<BookObject> result = dynamoDbTemplate.scan(request, BookObject.class);
+        PageIterable<Book> result = dynamoDbTemplate.scan(request, Book.class);
 
-        List<BookObject> bookObjects = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
 
         logger.info("result: " + result);
 
-        result.items().forEach(bookObjects::add);
+        result.items().forEach(books::add);
 
-        return bookObjects;
+        return books;
     }
 
-    public BookObject getBook(String id) {
+    public Book getBook(String id) {
         QueryConditional query =
                 QueryConditional.keyEqualTo(k -> k.partitionValue(id));
 
         QueryEnhancedRequest request = QueryEnhancedRequest.builder().queryConditional(query).build();
 
-        PageIterable<BookObject> result = dynamoDbTemplate.query(request, BookObject.class);
+        PageIterable<Book> result = dynamoDbTemplate.query(request, Book.class);
 
-        List<BookObject> bookObjects = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
 
-        result.items().forEach(bookObjects::add);
+        result.items().forEach(books::add);
 
-        if (bookObjects.size() == 0) {
+        if (books.size() == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
 
-        return bookObjects.get(0);
+        return books.get(0);
     }
 
 }

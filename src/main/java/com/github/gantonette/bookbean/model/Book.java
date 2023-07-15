@@ -5,7 +5,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 
 
 @DynamoDbBean
-public class BookObject {
+public class Book {
     private String id;
     private String title;
     private String author;
