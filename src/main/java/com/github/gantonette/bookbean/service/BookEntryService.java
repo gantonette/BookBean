@@ -70,4 +70,19 @@ public class BookEntryService {
         dynamoDbTemplate.save(bookEntry);
         return bookEntry;
     }
+
+    public BookEntry updateBookEntry(String entryId, BookEntry bookEntry) {
+        BookEntry existingBookEntry = getBookEntry(entryId);
+
+        existingBookEntry.setDescription(bookEntry.getDescription());
+        existingBookEntry.setImageRef(bookEntry.getImageRef());
+        dynamoDbTemplate.update(existingBookEntry);
+
+        return existingBookEntry;
+    }
+
+    public void deleteBookEntry(String entryId) {
+        BookEntry existingBookEntry = getBookEntry(entryId);
+        dynamoDbTemplate.delete(existingBookEntry);
+    }
 }

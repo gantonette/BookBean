@@ -29,12 +29,11 @@ public class BookController {
 
     @PutMapping("/books/{id}")
     Book updateBook(@PathVariable String id, @RequestBody Book book) {
-        return null;
-//        return bookService.updateBook(id, book);
+        return bookService.updateBook(id, book);
     }
 
     @DeleteMapping("/books/{id}")
     void deleteBook(@PathVariable String id) {
-//        bookService.deleteBook(id);
+        bookService.deleteBook(id);
     }
 }

@@ -30,11 +30,12 @@ public class BookEntryController {
 
     @PutMapping("/books/{bookId}/entries/{entryId}")
     BookEntry updateBookEntry(@PathVariable String bookId, @PathVariable String entryId, @RequestBody BookEntry bookEntry) {
-        return null;
+        return bookEntryService.updateBookEntry(entryId, bookEntry);
     }
 
     @DeleteMapping("/books/{bookId}/entries/{entryId}")
-    void deleteBookEntry(@PathVariable String id) {
+    void deleteBookEntry(@PathVariable String entryId, @PathVariable String bookId) {
+        bookEntryService.deleteBookEntry(entryId);
     }
 
 
