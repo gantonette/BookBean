@@ -3,7 +3,10 @@ package com.github.gantonette.bookbean.controller;
 import com.github.gantonette.bookbean.model.BookEntry;
 import com.github.gantonette.bookbean.service.BookEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,5 +41,19 @@ public class BookEntryController {
         bookEntryService.deleteBookEntry(entryId);
     }
 
+    @GetMapping("/books/{bookId}/entries/{entryId}/image")
+    @ResponseBody
+    ResponseEntity<InputStreamResource> getBookEntryImage(@PathVariable String bookId, @PathVariable String entryId) {
+        return bookEntryService.getBookEntryImage(entryId);
+    }
 
+    @PostMapping("/books/{bookId}/entries/{entryId}/image")
+    void addBookEntryImage(@PathVariable String entryId, @PathVariable String bookId, @RequestPart MultipartFile image) {
+        bookEntryService.addBookEntryImage(entryId, image);
+    }
+
+    @DeleteMapping("/books/{bookId}/entries/{entryId}/image/")
+    void deleteBookEntryImage(@PathVariable String entryId, @PathVariable String bookId) {
+        bookEntryService.deleteBookEntryImage(entryId);
+    }
 }
