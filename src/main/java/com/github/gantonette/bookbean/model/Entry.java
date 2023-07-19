@@ -12,7 +12,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 @AllArgsConstructor
 @Setter
 @Getter
-public class BookEntry {
+public class Entry {
 
     private String bookEntryId;
     private String bookId;

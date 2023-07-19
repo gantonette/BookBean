@@ -1,7 +1,7 @@
 package com.github.gantonette.bookbean.service;
 
 import com.github.gantonette.bookbean.model.Book;
-import com.github.gantonette.bookbean.model.BookEntry;
+import com.github.gantonette.bookbean.model.Entry;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -83,9 +83,9 @@ public class BookService {
                 Key.builder().partitionValue(id).build(), Book.class
         );
 
-        List<BookEntry> bookEntries = bookEntryService.getBookEntries(id);
+        List<Entry> bookEntries = bookEntryService.getBookEntries(id);
 
-        for(BookEntry bookentry : bookEntries) {
+        for(Entry bookentry : bookEntries) {
             bookEntryService.deleteBookEntry(bookentry.getBookEntryId());
         }
     }

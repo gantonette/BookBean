@@ -1,6 +1,6 @@
 package com.github.gantonette.bookbean.controller;
 
-import com.github.gantonette.bookbean.model.BookEntry;
+import com.github.gantonette.bookbean.model.Entry;
 import com.github.gantonette.bookbean.service.BookEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -17,23 +17,23 @@ public class BookEntryController {
     BookEntryService bookEntryService;
 
     @GetMapping("/books/{bookId}/entries")
-    List<BookEntry> getBookEntries(@PathVariable String bookId) {
+    List<Entry> getBookEntries(@PathVariable String bookId) {
         return bookEntryService.getBookEntries(bookId);
     }
 
     @GetMapping("/books/{bookId}/entries/{entryId}")
-    BookEntry getBookEntry(@PathVariable String bookId, @PathVariable String entryId) {
+    Entry getBookEntry(@PathVariable String bookId, @PathVariable String entryId) {
         return bookEntryService.getBookEntry(entryId);
     }
 
     @PostMapping("/books/{bookId}/entries")
-    BookEntry postBookEntry(@PathVariable String bookId, @RequestBody BookEntry bookEntry) {
-        return bookEntryService.postBookEntry(bookId, bookEntry);
+    Entry postBookEntry(@PathVariable String bookId, @RequestBody Entry entry) {
+        return bookEntryService.postBookEntry(bookId, entry);
     }
 
     @PutMapping("/books/{bookId}/entries/{entryId}")
-    BookEntry updateBookEntry(@PathVariable String bookId, @PathVariable String entryId, @RequestBody BookEntry bookEntry) {
-        return bookEntryService.updateBookEntry(entryId, bookEntry);
+    Entry updateBookEntry(@PathVariable String bookId, @PathVariable String entryId, @RequestBody Entry entry) {
+        return bookEntryService.updateBookEntry(entryId, entry);
     }
 
     @DeleteMapping("/books/{bookId}/entries/{entryId}")

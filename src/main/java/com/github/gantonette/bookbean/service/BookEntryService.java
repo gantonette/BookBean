@@ -1,7 +1,6 @@
 package com.github.gantonette.bookbean.service;
 
-import com.github.gantonette.bookbean.model.Book;
-import com.github.gantonette.bookbean.model.BookEntry;
+import com.github.gantonette.bookbean.model.Entry;
 import io.awspring.cloud.dynamodb.DynamoDbTemplate;
 import io.awspring.cloud.s3.S3Resource;
 import io.awspring.cloud.s3.S3Template;
@@ -34,7 +33,7 @@ public class BookEntryService {
     @Autowired DynamoDbTemplate dynamoDbTemplate;
     @Autowired S3Template s3Template;
 
-    public List<BookEntry> getBookEntries(String bookId) {
+    public List<Entry> getBookEntries(String bookId) {
         ScanEnhancedRequest request;
 
         if(Objects.equals(bookId, "all")) {
@@ -44,25 +43,25 @@ public class BookEntryService {
             request = ScanEnhancedRequest.builder().filterExpression(filterExpression).build();
         }
 
-        PageIterable<BookEntry> result = dynamoDbTemplate.scan(request, BookEntry.class);
+        PageIterable<Entry> result = dynamoDbTemplate.scan(request, Entry.class);
 
-        List<BookEntry> bookEntryList = new ArrayList<>();
+        List<Entry> entryList = new ArrayList<>();
 
-        result.items().forEach(bookEntryList::add);
+        result.items().forEach(entryList::add);
 
-        return bookEntryList;
+        return entryList;
 
     }
 
-    public BookEntry getBookEntry(String entryId) {
+    public Entry getBookEntry(String entryId) {
         QueryConditional query =
                 QueryConditional.keyEqualTo(k -> k.partitionValue(entryId));
 
         QueryEnhancedRequest request = QueryEnhancedRequest.builder().queryConditional(query).build();
 
-        PageIterable<BookEntry> result = dynamoDbTemplate.query(request, BookEntry.class);
+        PageIterable<Entry> result = dynamoDbTemplate.query(request, Entry.class);
 
-        List<BookEntry> bookEntries = new ArrayList<>();
+        List<Entry> bookEntries = new ArrayList<>();
 
         result.items().forEach(bookEntries::add);
 
@@ -73,37 +72,37 @@ public class BookEntryService {
         return bookEntries.get(0);
     }
 
-    public BookEntry postBookEntry(String bookId, BookEntry bookEntry) {
-        bookEntry.setBookId(bookId);
+    public Entry postBookEntry(String bookId, Entry entry) {
+        entry.setBookId(bookId);
         String entryId = UUID.randomUUID().toString();
-        bookEntry.setImageRef(null);
-        bookEntry.setBookEntryId(entryId);
-        dynamoDbTemplate.save(bookEntry);
-        return bookEntry;
+        entry.setImageRef(null);
+        entry.setBookEntryId(entryId);
+        dynamoDbTemplate.save(entry);
+        return entry;
     }
 
-    public BookEntry updateBookEntry(String entryId, BookEntry bookEntry) {
-        BookEntry existingBookEntry = getBookEntry(entryId);
+    public Entry updateBookEntry(String entryId, Entry entry) {
+        Entry existingEntry = getBookEntry(entryId);
 
-        existingBookEntry.setDescription(bookEntry.getDescription());
-        existingBookEntry.setImageRef(bookEntry.getImageRef());
-        dynamoDbTemplate.update(existingBookEntry);
+        existingEntry.setDescription(entry.getDescription());
+        existingEntry.setImageRef(entry.getImageRef());
+        dynamoDbTemplate.update(existingEntry);
 
-        return existingBookEntry;
+        return existingEntry;
     }
 
     public void deleteBookEntry(String entryId) {
-        BookEntry existingBookEntry = getBookEntry(entryId);
-        dynamoDbTemplate.delete(existingBookEntry);
+        Entry existingEntry = getBookEntry(entryId);
+        dynamoDbTemplate.delete(existingEntry);
     }
 
     public ResponseEntity<InputStreamResource> getBookEntryImage(String entryId) {
         try {
-            BookEntry existingBookEntry = getBookEntry(entryId);
-            if (existingBookEntry.getImageRef() == null) {
+            Entry existingEntry = getBookEntry(entryId);
+            if (existingEntry.getImageRef() == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "image does not exist");
             }
-            S3Resource image = s3Template.download(BUCKET_NAME, existingBookEntry.getImageRef());
+            S3Resource image = s3Template.download(BUCKET_NAME, existingEntry.getImageRef());
 
             HttpHeaders headers = new HttpHeaders();
             InputStreamResource streamSource = new InputStreamResource(image.getInputStream());
@@ -117,11 +116,11 @@ public class BookEntryService {
 
     public void addBookEntryImage(String entryId, MultipartFile image) {
         try {
-            BookEntry existingBookEntry = getBookEntry(entryId);
-            String imageRef = existingBookEntry.getBookEntryId() + "-" + image.getOriginalFilename();
+            Entry existingEntry = getBookEntry(entryId);
+            String imageRef = existingEntry.getBookEntryId() + "-" + image.getOriginalFilename();
             s3Template.upload(BUCKET_NAME, imageRef, image.getInputStream());
-            existingBookEntry.setImageRef(imageRef);
-            dynamoDbTemplate.update(existingBookEntry);
+            existingEntry.setImageRef(imageRef);
+            dynamoDbTemplate.update(existingEntry);
         } catch (ResponseStatusException | IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
@@ -129,13 +128,13 @@ public class BookEntryService {
     }
     public void deleteBookEntryImage(String entryId) {
         try {
-            BookEntry existingBookEntry = getBookEntry(entryId);
-            if (existingBookEntry.getImageRef() == null) {
+            Entry existingEntry = getBookEntry(entryId);
+            if (existingEntry.getImageRef() == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found");
             }
-            s3Template.deleteObject(BUCKET_NAME, existingBookEntry.getImageRef());
-            existingBookEntry.setImageRef(null);
-            dynamoDbTemplate.update(existingBookEntry);
+            s3Template.deleteObject(BUCKET_NAME, existingEntry.getImageRef());
+            existingEntry.setImageRef(null);
+            dynamoDbTemplate.update(existingEntry);
         } catch (ResponseStatusException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book entry not found");
         }

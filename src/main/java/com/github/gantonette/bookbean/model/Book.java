@@ -5,7 +5,6 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @DynamoDbBean
@@ -14,7 +13,7 @@ public class Book {
     private String title;
     private String author;
 
-    private List<BookEntry> bookEntryList = new ArrayList<>();
+    private List<Entry> entryList = new ArrayList<>();
 
     @DynamoDbPartitionKey
     public String getId() {
